@@ -31,13 +31,14 @@ public class PartnerRepositoryTest extends StudyApplicationTests {
         partner.setName(name);
         partner.setStatus(status);
         partner.setAddress(address);
+        partner.setCallCenter(callCenter);
         partner.setPartnerNumber(partnerNumber);
         partner.setBusinessNumber(businessNumber);
         partner.setCeoName(ceoName);
         partner.setRegisteredAt(registeredAt);
         partner.setCreatedAt(createdAt);
         partner.setCreatedBy(createdBy);
-        partner.setCategoryId(categoryId);
+        //partner.setCategoryId(categoryId);
 
         Partner newPartner = partnerRepository.save(partner);
         Assertions.assertNotNull(newPartner);
