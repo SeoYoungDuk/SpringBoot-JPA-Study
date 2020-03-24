@@ -4,12 +4,13 @@ package com.example.study.ifs;
 
 import com.example.study.model.network.Header;
 
-public interface CrudInterface {
-    Header create();    //todo request object 추가
+//일일히 User, Order 인터페이스를 만들어 주기 귀찮기 때문에 타입을 제네릭으로 관리하는게 편하다.
+public interface CrudInterface<Req, Res> {
+    Header<Res> create(Header<Req> request);    //todo request object 추가
 
-    Header read(Long id);
+    Header<Res> read(Long id);
 
-    Header update();
+    Header<Res> update(Header<Req> requset);
 
     Header delete(Long id);
 }
