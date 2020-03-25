@@ -9,7 +9,9 @@ import com.example.study.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class UserApiLogicService implements CrudInterface<UserApiRequest, UserApiResponse> {
@@ -45,12 +47,44 @@ public class UserApiLogicService implements CrudInterface<UserApiRequest, UserAp
 
     @Override
     public Header<UserApiResponse> read(Long id) {
-        return null;
+        //id -> repository getOne, getById
+        return userRepository.findById(id)
+                .map(user -> response(user))
+                .orElseGet(()->Header.ERROR("데이터 없음"));
+
+//        Optional<User> optional =userRepository.findById(
+//        id);
+//
+//        //user -> userApiResponse return
+//        return optional
+//                .map(user -> response(user))
+//                .orElseGet(()->Header.ERROR("데이터 없음"));
     }
 
     @Override
     public Header<UserApiResponse> update(Header<UserApiRequest> requset) {
-        return null;
+        //1.data 가져오기
+        UserApiRequest userApiRequest = requset.getData();
+        //2.id -> user 데이터 찾기
+
+        Optional<User> optional= userRepository.findById(userApiRequest.getId());
+        return optional.map(user->{
+            //3.data -> update
+            //id
+            user.setAccount(userApiRequest.getPassword())
+                    .setPassword(userApiRequest.getPassword())
+                    .setStatus(userApiRequest.getStatus())
+                    .setPhoneNumber(userApiRequest.getPhoneNumber())
+                    .setEmail(userApiRequest.getEmail())
+                    .setRegisteredAt(userApiRequest.getRegisteredAt())
+                    .setUnregisteredAt(userApiRequest.getUnregisteredAt());
+
+            return user;
+
+        })
+        .map(user -> userRepository.save(user))//update -> newUser
+        .map(updateUser -> response(updateUser))//userApiResponse
+        .orElseGet(()->Header.ERROR("데이터없음"));
     }
 
     @Override
