@@ -37,25 +37,52 @@ public class ItemApiLogicService implements CrudInterface<ItemApiRequest, ItemAp
 
         Item newItem = itemRepository.save(item);
 
-        return responce(newItem);
+        return response(newItem);
     }
 
     @Override
     public Header<ItemApiResponse> read(Long id) {
-        return null;
+
+        return itemRepository.findById(id)
+                .map(item -> response(item))
+                .orElseGet(()-> Header.ERROR("데이터 없음"));
     }
 
     @Override
-    public Header<ItemApiResponse> update(Header<ItemApiRequest> requset) {
-        return null;
+    public Header<ItemApiResponse> update(Header<ItemApiRequest> request) {
+
+        ItemApiRequest body = request.getData();
+
+        return itemRepository.findById(body.getId())
+                .map(entityItem -> {
+                    entityItem
+                            .setStatus(body.getStatus())
+                            .setName(body.getName())
+                            .setTitle(body.getTitle())
+                            .setContent(body.getContent())
+                            .setPrice(body.getPrice())
+                            .setBrandName(body.getBrandName())
+                            .setRegisteredAt(body.getRegisteredAt())
+                            .setUnregisteredAt(body.getUnregisteredAt())
+                            ;
+                    return entityItem;
+                })
+                .map(newEntityItem -> itemRepository.save(newEntityItem))
+                .map(item -> response(item))
+                .orElseGet(()->Header.ERROR("데이터 없음"));
     }
 
     @Override
     public Header delete(Long id) {
-        return null;
+        return itemRepository.findById(id)
+                .map(item -> {
+                    itemRepository.delete(item);
+                    return Header.OK();
+                })
+                .orElseGet(()-> Header.ERROR("데이터 없음"));
     }
 
-    private  Header<ItemApiResponse> responce(Item item){
+    private  Header<ItemApiResponse> response(Item item){
         ItemApiResponse body = ItemApiResponse.builder()
                 .id(item.getId())
                 .status(item.getStatus())
