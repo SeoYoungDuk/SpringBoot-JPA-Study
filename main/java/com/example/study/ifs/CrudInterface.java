@@ -10,7 +10,7 @@ public interface CrudInterface<Req, Res> {
 
     Header<Res> read(Long id);
 
-    Header<Res> update(Header<Req> requset);
+    Header<Res> update(Header<Req> request);
 
     Header delete(Long id);
 }
