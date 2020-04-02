@@ -24,12 +24,13 @@ public class OrderGroupApiController implements CrudInterface<OrderGroupApiReque
     @Override
     @GetMapping("{id}")
     public Header<OrderGroupApiResponse> read(@PathVariable Long id) {
-        return null;
+        return orderGroupApiLogicService.read(id);
     }
 
     @Override
     @PutMapping("")
     public Header<OrderGroupApiResponse> update(@RequestBody Header<OrderGroupApiRequest> request) {
+
         return null;
     }
 
