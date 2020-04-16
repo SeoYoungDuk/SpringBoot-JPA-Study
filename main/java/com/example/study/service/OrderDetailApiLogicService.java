@@ -48,17 +48,44 @@ public class OrderDetailApiLogicService implements CrudInterface<OrderDetailApiR
 
     @Override
     public Header<OrderDetailApiResponse> read(Long id) {
-        return null;
+        return orderDetailRepository.findById(id)
+                .map(this::response)
+                .orElseGet(()->Header.ERROR("데이터 없음"));
     }
 
     @Override
     public Header<OrderDetailApiResponse> update(Header<OrderDetailApiRequest> request) {
-        return null;
+        OrderDetailApiRequest body = request.getData();
+
+        return orderDetailRepository.findById(body.getId())
+                .map(orderDetail -> {
+                    orderDetail
+                            .setStatus(body.getStatus())
+                            .setArrivalDate(body.getArrivalDate())
+                            .setQuantity(body.getQuantity())
+                            .setTotalPrice(body.getTotalPrice())
+                            .setCreatedAt(body.getCreatedAt())
+                            .setCreatedBy(body.getCreatedBy())
+                            .setUpdatedAt(body.getUpdatedAt())
+                            .setUpdatedBy(body.getUpdatedBy())
+                            .setItem(itemRepository.getOne(body.getItemId()))
+                            .setOrderGroup(orderGroupRepository.getOne(body.getOrderGroupId()));
+                    return orderDetail;
+                } )
+                .map(changeOrderDetail -> orderDetailRepository.save(changeOrderDetail))
+                .map(orderDetail -> response(orderDetail))
+                .orElseGet(()->Header.ERROR("데이터없음"));
     }
 
     @Override
     public Header delete(Long id) {
-        return null;
+
+        return orderDetailRepository.findById(id)
+                .map(orderDetail-> {
+                    orderDetailRepository.delete(orderDetail);
+                    return Header.OK();
+                })
+                .orElseGet(()->Header.ERROR("데이터 없음"));
     }
 
     private Header<OrderDetailApiResponse> response(OrderDetail orderDetail){
@@ -72,8 +99,8 @@ public class OrderDetailApiLogicService implements CrudInterface<OrderDetailApiR
                 .createdBy(orderDetail.getCreatedBy())
                 .updatedAt(orderDetail.getUpdatedAt())
                 .updatedBy(orderDetail.getUpdatedBy())
-                .itemId(orderDetail.getItem().getId())
                 .orderGroupId(orderDetail.getOrderGroup().getId())
+                .itemId(orderDetail.getItem().getId())
                 .build();
 
         return Header.OK(body);

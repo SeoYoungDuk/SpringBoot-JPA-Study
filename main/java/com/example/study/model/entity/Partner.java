@@ -60,7 +60,7 @@ public class Partner {
     //private Long categoryId;
 
     //Partner N : 1 category
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
 
     //Partner 1 : N Item

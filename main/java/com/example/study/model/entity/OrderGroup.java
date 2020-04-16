@@ -59,7 +59,7 @@ public class OrderGroup {
     private String updatedBy;
 
     //OrderGroup N : 1 User
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
     //OrderGroup 1 : N OrderDetail

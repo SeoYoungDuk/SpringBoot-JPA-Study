@@ -2,6 +2,7 @@ package com.example.study.model.entity;
 
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.BatchSize;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -48,14 +49,12 @@ public class OrderDetail {
 
     // OrderDetail N : 1 Item
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item item;
 
     //OrderDetail N : 1 OrderGroup;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private OrderGroup orderGroup;
-
-
 
     // N : 1
 //    @ManyToOne
