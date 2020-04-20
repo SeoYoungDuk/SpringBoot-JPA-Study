@@ -30,12 +30,14 @@ public class PartnerApiController implements CrudInterface<PartnerApiRequest, Pa
     @Override
     @PutMapping("")
     public Header<PartnerApiResponse> update(@RequestBody Header<PartnerApiRequest> request) {
-        return null;
+
+        return partnerApiLogicService.update(request);
     }
 
     @Override
     @DeleteMapping("{id}")
     public Header delete(@PathVariable Long id) {
-        return null;
+
+        return partnerApiLogicService.delete(id);
     }
 }
