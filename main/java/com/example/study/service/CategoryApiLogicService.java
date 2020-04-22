@@ -35,17 +35,41 @@ public class CategoryApiLogicService implements CrudInterface<CategoryApiRequest
 
     @Override
     public Header<CategoryApiResponse> read(Long id) {
-        return null;
+
+        return categoryRepository.findById(id)
+                .map(category -> response(category))
+                .orElseGet(()->Header.ERROR("데이터 없음"));
     }
 
     @Override
     public Header<CategoryApiResponse> update(Header<CategoryApiRequest> request) {
-        return null;
+
+        CategoryApiRequest body = request.getData();
+
+        return categoryRepository.findById(body.getId())
+                .map(category -> {
+                    category
+                    .setType(body.getType())
+                    .setTitle(body.getTitle())
+                    .setCreatedAt(body.getCreatedAt())
+                    .setCreatedBy(body.getCreatedBy())
+                    .setUpdatedAt(body.getUpdatedAt())
+                    .setCreatedBy(body.getUpdatedBy());
+            return category;
+        })
+                .map(newCategory->categoryRepository.save(newCategory))
+                .map(category -> response(category))
+                .orElseGet(()->Header.ERROR("데이터 없음"));
     }
 
     @Override
     public Header delete(Long id) {
-        return null;
+        return categoryRepository.findById(id)
+                .map(category -> {
+                  categoryRepository.delete(category);
+                  return Header.OK();
+                })
+                .orElseGet(()->Header.ERROR("데이터 없음"));
     }
 
     public Header<CategoryApiResponse> response(Category category){

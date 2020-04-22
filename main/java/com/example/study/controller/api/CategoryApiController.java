@@ -25,19 +25,22 @@ public class CategoryApiController implements CrudInterface<CategoryApiRequest, 
     @Override
     @GetMapping("{id}")
     public Header<CategoryApiResponse> read(@PathVariable Long id) {
-        return null;
+
+        return categoryApiLogicService.read(id);
+
     }
 
     @Override
     @PutMapping("")
     public Header<CategoryApiResponse> update(@RequestBody Header<CategoryApiRequest> request) {
-        return null;
+
+        return categoryApiLogicService.update(request);
     }
 
 
     @Override
     @DeleteMapping("{id}")
     public Header delete(@PathVariable Long id) {
-        return null;
+        return categoryApiLogicService.delete(id);
     }
 }
