@@ -23,18 +23,20 @@ public class AdminUserApiController implements CrudInterface<AdminUserApiRequest
     @Override
     @GetMapping("{id}")
     public Header<AdminUserApiResponse> read(@PathVariable Long id) {
-        return null;
+
+        return adminUserApiLogicService.read(id);
     }
 
     @Override
     @PutMapping("")
     public Header<AdminUserApiResponse> update(@RequestBody Header<AdminUserApiRequest> request) {
-        return null;
+
+        return adminUserApiLogicService.update(request);
     }
 
     @Override
     @DeleteMapping("{id}")
     public Header delete(@PathVariable Long id) {
-        return null;
+        return adminUserApiLogicService.delete(id);
     }
 }

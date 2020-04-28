@@ -26,6 +26,8 @@ public class AdminUserApiResponse {
 
     private Integer loginFailCount;
 
+    private LocalDateTime passwordUpdatedAt;
+
     private LocalDateTime registeredAt;
 
     private LocalDateTime unregisteredAt;

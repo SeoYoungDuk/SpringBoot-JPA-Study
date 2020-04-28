@@ -24,6 +24,7 @@ public class AdminUserApiLogicService implements CrudInterface<AdminUserApiReque
                 .status(adminUserApiRequest.getStatus())
                 .role(adminUserApiRequest.getRole())
                 .lastLoginAt(adminUserApiRequest.getLastLoginAt())
+                .passwordUpdatedAt(adminUserApiRequest.getPasswordUpdatedAt())
                 .registeredAt(adminUserApiRequest.getRegisteredAt())
                 .unregisteredAt(adminUserApiRequest.getUnregisteredAt())
                 .createdAt(adminUserApiRequest.getCreatedAt())
@@ -39,17 +40,48 @@ public class AdminUserApiLogicService implements CrudInterface<AdminUserApiReque
 
     @Override
     public Header<AdminUserApiResponse> read(Long id) {
-        return null;
+
+        return adminUserRepository.findById(id).
+                map(adminUser -> response(adminUser))
+                .orElseGet(()->Header.ERROR("데이터 없음"));
     }
 
     @Override
     public Header<AdminUserApiResponse> update(Header<AdminUserApiRequest> request) {
-        return null;
+        AdminUserApiRequest body = request.getData();
+        return adminUserRepository.findById(body.getId())
+                .map(adminUser -> {
+                    adminUser
+                            .setAccount(body.getAccount())
+                            .setPassword(body.getPassword())
+                            .setStatus(body.getStatus())
+                            .setRole(body.getRole())
+                            .setLastLoginAt(body.getLastLoginAt())
+                            .setLoginFailCount(body.getLoginFailCount())
+                            .setPasswordUpdatedAt(body.getPasswordUpdatedAt())
+                            .setRegisteredAt(body.getRegisteredAt())
+                            .setRegisteredAt(body.getRegisteredAt())
+                            .setUnregisteredAt(body.getUnregisteredAt())
+                            .setCreatedAt(body.getCreatedAt())
+                            .setCreatedBy(body.getCreatedBy())
+                            .setUpdatedAt(body.getUpdatedAt())
+                            .setCreatedBy(body.getUpdatedBy());
+                    return adminUser;
+                })
+                .map(adminUser->adminUserRepository.save(adminUser))
+                .map(adminUser -> response(adminUser))
+                .orElseGet(()->Header.ERROR("데이터 없음"));
     }
 
     @Override
     public Header delete(Long id) {
-        return null;
+        return adminUserRepository.findById(id)
+                .map(adminUser -> {
+                    adminUserRepository.delete(adminUser);
+                    return Header.OK();
+                })
+                
+                .orElseGet(()->Header.ERROR("데이터 없음"));
     }
 
     private Header<AdminUserApiResponse> response(AdminUser adminUser){
