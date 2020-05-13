@@ -11,10 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PartnerApiLogicService implements CrudInterface<PartnerApiRequest, PartnerApiResponse> {
+public class PartnerApiLogicService extends BaseService<PartnerApiRequest, PartnerApiResponse, Partner> {
 
-    @Autowired
-    private PartnerRepository partnerRepository;
+//    @Autowired
+//    private PartnerRepository partnerRepository;
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -42,14 +42,14 @@ public class PartnerApiLogicService implements CrudInterface<PartnerApiRequest, 
                 .updatedBy(body.getUpdatedBy())
                 .build();
 
-        Partner newPartner = partnerRepository.save(partner);
+        Partner newPartner = baseRepository.save(partner);
 
         return response(newPartner);
     }
 
     @Override
     public Header<PartnerApiResponse> read(Long id) {
-        return partnerRepository.findById(id)
+        return baseRepository.findById(id)
                 .map(this::response)
                 .orElseGet(()->Header.ERROR("데이터 없음"));
     }
@@ -59,7 +59,7 @@ public class PartnerApiLogicService implements CrudInterface<PartnerApiRequest, 
 
         PartnerApiRequest body = request.getData();
 
-        return partnerRepository.findById(body.getId())
+        return baseRepository.findById(body.getId())
                 .map(partner -> {
                     partner
                             .setName(body.getName())
@@ -79,16 +79,16 @@ public class PartnerApiLogicService implements CrudInterface<PartnerApiRequest, 
                     return partner;
 
                 })
-                .map(newPartner -> partnerRepository.save(newPartner))
+                .map(newPartner -> baseRepository.save(newPartner))
                 .map(this::response)
                 .orElseGet(()->Header.ERROR("데이터 없음"));
     }
 
     @Override
     public Header delete(Long id) {
-        return partnerRepository.findById(id)
+        return baseRepository.findById(id)
                 .map(partner -> {
-                    partnerRepository.delete(partner);
+                    baseRepository.delete(partner);
                     return Header.OK();
                 })
                 .orElseGet(()->Header.ERROR("데이터 없음"));
